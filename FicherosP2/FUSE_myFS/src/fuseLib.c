@@ -296,9 +296,33 @@ static int my_open(const char *path, struct fuse_file_info *fi)
 
 
 /**
+ * @brief File reading
+ * 
+ * Help from FUSE:
+ *
+ * Escribir aqui lo que hace
+ *
+ * @param path nombre/ruta del fichero
+ * @param buf buffer donde hay que copiar los bytes leidos del fichero
+ * @param size cantidad de bytes a leer
+ * @param offset oﬀset desde el comienzo del ﬁchero p ara comenzar la lectura
+ * @param fi estructura de FUSE asociadda al fichero
+ * @return 0 on success and <0 on error
+ **/
+static int my_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_into *fi){
+
+    //TODO : implementar
+
+
+
+    return 0;
+}
+
+
+/**
  * @brief Write data on an opened file
  *
- * Help from FUSE
+ * Help from FUSE:
  *
  * Write should return exactly the number of bytes requested except on error.
  *
@@ -321,7 +345,7 @@ static int my_write(const char *path, const char *buf, size_t size, off_t offset
     if(resizeNode(fi->fh, size + offset) < 0)
         return -EIO;
 
-    // Write data
+    // Write data -> puede que nos toque escribir en varios bloques parcialmente
     while(bytes2Write) {
         int i;
         int currentBlock, offBlock;
@@ -474,14 +498,52 @@ static int my_truncate(const char *path, off_t size)
     return 0;
 }
 
+//TODO: hacer documentacion
+int my_unlink(const char *filename){
+    fprintf(stderr, "Hemos llegado a unlink\n!");
+    //TODO : implementar
+    int idxNode;
+    //Buscar path en el directorio del SF
 
+
+    //idxNode = nodo-i del fichero
+
+
+    //Truncar el fichero utilizando resizeNode
+
+
+    //Marcar la entrada de directorio como libre
+
+
+    //Decrementar el contador de ficheros del directorio
+
+
+    //Marcar el nodo-i como libre
+
+
+    //Incrementar el contador de nodos-i libres
+
+
+    //Actualizar el directorio en el disco virtual
+
+
+    //Actualizar el nodo-i en el disco virtual
+
+
+    //Liberar la memoria del nodo-i y actualizar la tabla
+
+
+    return 0;
+}
 struct fuse_operations myFS_operations = {
     .getattr	= my_getattr,					// Obtain attributes from a file
     .readdir	= my_readdir,					// Read directory entries
     .truncate	= my_truncate,					// Modify the size of a file
     .open		= my_open,						// Oeen a file
     .write		= my_write,						// Write data into a file already opened
+    .read       = my_read,                      // Read data from a file already open
     .release	= my_release,					// Close an opened file
     .mknod		= my_mknod,						// Create a new file
+    .unlink     = my_unlink,                
 };
 

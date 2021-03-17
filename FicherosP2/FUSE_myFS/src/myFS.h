@@ -10,10 +10,10 @@
 #define false 0
 #define true 1
 
-#define BIT unsigned
-#define BLOCK_SIZE_BYTES 4096
-#define NUM_BITS (BLOCK_SIZE_BYTES/sizeof(BIT))
-#define MAX_BLOCKS_WITH_NODES 5
+#define BIT unsigned 
+#define BLOCK_SIZE_BYTES 4096 //4KB
+#define NUM_BITS (BLOCK_SIZE_BYTES/sizeof(BIT)) //Numero de bits que caben en un bloque
+#define MAX_BLOCKS_WITH_NODES 5 //Maximo num de bloques que voy a destinar a la tabla de nodos-i
 #define MAX_BLOCKS_PER_FILE 100
 #define MAX_FILES_PER_DIRECTORY 100
 #define MAX_LEN_FILE_NAME 15
