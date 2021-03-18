@@ -14,9 +14,9 @@
 #define BLOCK_SIZE_BYTES 4096 //4KB
 #define NUM_BITS (BLOCK_SIZE_BYTES/sizeof(BIT)) //Numero de bits que caben en un bloque
 #define MAX_BLOCKS_WITH_NODES 5 //Maximo num de bloques que voy a destinar a la tabla de nodos-i
-#define MAX_BLOCKS_PER_FILE 100
-#define MAX_FILES_PER_DIRECTORY 100
-#define MAX_LEN_FILE_NAME 15
+#define MAX_BLOCKS_PER_FILE 100 //maximo de bloques por archivo
+#define MAX_FILES_PER_DIRECTORY 100 //Maximo de archivos por dirctorio
+#define MAX_LEN_FILE_NAME 15 //maxima longitud de los archivos
 #define DISK_LBA int
 #define BOOLEAN int
 
@@ -26,12 +26,14 @@
 #define NODES_IDX 3
 
 // STRUCTS
+//Aqui se almacena la informacion relativa a  cada archivo
 typedef struct FileStructure {
     int  nodeIdx;                         	// Associated i-node
     char fileName[MAX_LEN_FILE_NAME + 1];	// File name
     BOOLEAN freeFile;                       // Free file
 } FileStruct;
 
+//Estructura directorio --> tendremos un unico directorio
 typedef struct DirectoryStructure {
     int numFiles;                          		// Num files
     FileStruct files[MAX_FILES_PER_DIRECTORY];	// Files
@@ -48,22 +50,26 @@ typedef struct NodeStructure {
 #define NODES_PER_BLOCK (BLOCK_SIZE_BYTES/sizeof(NodeStruct))
 #define MAX_NODES (NODES_PER_BLOCK * MAX_BLOCKS_WITH_NODES)
 
+//Una estructura que se almacena en el bloque 0 del archivo, 
+// y contiene informacion global del Sistema de Ficheros
 typedef struct SuperBlockStructure {
     time_t creationTime;     	// Creation time
-    int diskSizeInBlocks;    	// # blocks in disk
-    int numOfFreeBlocks;     	// # of available blocks
+    int diskSizeInBlocks;    	// # blocks in disk -> numero de bloques que hay en el disco
+    int numOfFreeBlocks;     	// # of available blocks -> numero total de bloques libres
     int blockSize;            	// Block size
     int maxLenFileName;  		// Max. length of a file name
     int maxBlocksPerFile; 		// Max. number of blocks per file
 } SuperBlockStruct;
 
+//TODO el FS (filesystem)
 typedef struct MyFileSystemStructure {
     int fdVirtualDisk;             		// File descriptor where the whole filesystem is stored
-    SuperBlockStruct superBlock;   		// Super block
-    BIT bitMap[NUM_BITS];            	// Bit map
-    DirectoryStruct directory;     		// Root directory
-    NodeStruct* nodes[MAX_NODES];		// Array of inode pointers
+    SuperBlockStruct superBlock;   		// Super block, que almacena informacion generica del SF
+    BIT bitMap[NUM_BITS];            	// Bit map, que indica que bloques estan libres [0] o ocupados [1]
+    DirectoryStruct directory;     		// Root directory --> listado de ficheros del directorio raiz
+    NodeStruct* nodes[MAX_NODES];		// Array of inode pointers --> estructura de tamaño fijo con los nodos-i
     int numFreeNodes;                  // # of available inodes
+    //datos --> datos vinculados a los nodos-i
 } MyFileSystem;
 
 
