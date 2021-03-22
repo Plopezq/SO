@@ -40,11 +40,11 @@ typedef struct DirectoryStructure {
 } DirectoryStruct;
 
 typedef struct NodeStructure {
-    int numBlocks;                        		// Num blocks
-    int fileSize;                        		// File size
-    time_t modificationTime;              		// Modification time
-    DISK_LBA blocks[MAX_BLOCKS_PER_FILE];		// Blocks
-    BOOLEAN freeNode;                        	// If the node is available
+    int numBlocks;                        		// Numero de bloques que ocupa el archivo asociado
+    int fileSize;                        		// Tamanyo del archivo asociado
+    time_t modificationTime;              		// Fecha y hora en la que fue creado o modificado el archivo
+    DISK_LBA blocks[MAX_BLOCKS_PER_FILE];		// Los indices de los bloques del SF donde estan los datos del archivo asociado
+    BOOLEAN freeNode;                        	// Nodo libre o no?
 } NodeStruct;
 
 #define NODES_PER_BLOCK (BLOCK_SIZE_BYTES/sizeof(NodeStruct))
@@ -68,7 +68,7 @@ typedef struct MyFileSystemStructure {
     BIT bitMap[NUM_BITS];            	// Bit map, que indica que bloques estan libres [0] o ocupados [1]
     DirectoryStruct directory;     		// Root directory --> listado de ficheros del directorio raiz
     NodeStruct* nodes[MAX_NODES];		// Array of inode pointers --> estructura de tamaño fijo con los nodos-i
-    int numFreeNodes;                  // # of available inodes
+    int numFreeNodes;                  // Cantidad de nodos-i libres que quedan en el SF
     //datos --> datos vinculados a los nodos-i
 } MyFileSystem;
 
@@ -222,6 +222,44 @@ int updateNode(MyFileSystem *myFileSystem, int nodeNum, NodeStruct *node);
  **/
 int updateSuperBlock(MyFileSystem *myFileSystem);
 
+/**
+ * 
+ * 
+ * 
+ **/
+int readBitmap(MyFileSystem *myFileSystem);
+
+
+/**
+ * 
+ * 
+ * 
+ **/
+int readDirectory(MyFileSystem* myFileSystem);
+
+
+/**
+ * 
+ * 
+ * 
+ **/
+int readSuperblock(MyFileSystem* myFileSystem);
+
+
+/**
+ * 
+ * 
+ * 
+ **/
+int readInodes(MyFileSystem* myFileSystem);
+
+/**
+ * 
+ * 
+ * 
+ **/
+int myMount(MyFileSystem *myFileSystem, char *backupFileName);
+
 
 /**
  * @brief Reads numBlock from storage into buffer
@@ -243,6 +281,7 @@ int readBlock(MyFileSystem *myFileSystem, DISK_LBA blockNumber, void *buffer);
  * @return 0 on success and -1 on error
  **/
 int writeBlock(MyFileSystem *myFileSystem, DISK_LBA blockNumber, void *buffer);
+
 
 
 #endif
