@@ -253,12 +253,6 @@ int readSuperblock(MyFileSystem* myFileSystem);
  **/
 int readInodes(MyFileSystem* myFileSystem);
 
-/**
- * 
- * 
- * 
- **/
-int myMount(MyFileSystem *myFileSystem, char *backupFileName);
 
 
 /**
