@@ -14,7 +14,7 @@ MyFileSystem myFileSystem;
 int main(int argc, char **argv)
 {
     myFileSystem.numFreeNodes = MAX_NODES;
-
+ 
     int ret; // Resulting code of the functions call
 
     int opt, diskSize = -1;

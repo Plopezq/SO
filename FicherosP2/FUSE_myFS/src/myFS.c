@@ -115,6 +115,8 @@ void myFree(MyFileSystem *myFileSystem)
     }
 }
 
+//Esta funcion crea unSF de diskSize y almacena su contenido en el archivo backupFileName
+//Ademas, esta funcion inicializa todas las estructuras de datos
 int myMkfs(MyFileSystem *myFileSystem, int diskSize, char *backupFileName)
 {
     // We create the virtual disk:
@@ -158,7 +160,7 @@ int myMkfs(MyFileSystem *myFileSystem, int diskSize, char *backupFileName)
     }
     updateDirectory(myFileSystem);
 
-    /// INODES
+    /// INODES -> inicializamos todos los nodos como libres
     NodeStruct currentNode;
     currentNode.freeNode = 1;
     for(i = 0; i < MAX_NODES; i++) {
