@@ -374,7 +374,7 @@ static int my_write(const char *path, const char *buf, size_t size, off_t offset
         bytes2Write -= (i - offBlock);
         offset += (i - offBlock);
     }
-    sync();
+    sync(); //Para que se actualicen todos los bloques en el sistema de ficheros 
 
     node->modificationTime = time(NULL);
     updateSuperBlock(&myFileSystem);
@@ -504,6 +504,7 @@ static int my_truncate(const char *path, off_t size)
 
 //TODO: hacer documentacion
 int my_unlink(const char *filename){
+    //  VER DIAPOSITIVA 14
     fprintf(stderr, "Hemos llegado a unlink\n!");
     //TODO : implementar
     int idxNode;
@@ -543,7 +544,7 @@ struct fuse_operations myFS_operations = {
     .getattr	= my_getattr,					// Obtain attributes from a file
     .readdir	= my_readdir,					// Read directory entries
     .truncate	= my_truncate,					// Modify the size of a file
-    .open		= my_open,						// Oeen a file
+    .open		= my_open,						// Open a file
     .write		= my_write,						// Write data into a file already opened
     .read       = my_read,                      // Read data from a file already open
     .release	= my_release,					// Close an opened file
