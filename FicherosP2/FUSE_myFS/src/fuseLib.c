@@ -308,6 +308,10 @@ static int my_open(const char *path, struct fuse_file_info *fi)
  * @param offset oﬀset desde el comienzo del ﬁchero p ara comenzar la lectura
  * @param fi estructura de FUSE asociadda al fichero
  * @return 0 on success and <0 on error
+ * 
+ * Segun el manual, la funcion debe retornar tantos bytes como se le solicitan,
+ * siempre y cuando los haya, ya que en caso conntrario seran rellenados con ceros
+ * 
  **/
 static int my_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_into *fi){
 

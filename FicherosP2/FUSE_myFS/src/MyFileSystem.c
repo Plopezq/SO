@@ -55,6 +55,7 @@ int main(int argc, char **argv)
         }
 
         // Format file without format?
+        //Esta funcion inicializa el sistema de ficheros
         ret = myMkfs(&myFileSystem, diskSize, backupFileName);
     } else {
         // Any parameter missing?
