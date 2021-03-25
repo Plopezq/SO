@@ -306,20 +306,53 @@ static int my_open(const char *path, struct fuse_file_info *fi)
  * @param buf buffer donde hay que copiar los bytes leidos del fichero
  * @param size cantidad de bytes a leer
  * @param offset oﬀset desde el comienzo del ﬁchero p ara comenzar la lectura
- * @param fi estructura de FUSE asociadda al fichero
+ * @param fi estructura de FUSE asociada al fichero
  * @return 0 on success and <0 on error
  * 
  * Segun el manual, la funcion debe retornar tantos bytes como se le solicitan,
  * siempre y cuando los haya, ya que en caso conntrario seran rellenados con ceros
  * 
  **/
-static int my_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_into *fi){
+static int my_read(const char *path, char *buf, size_t size, off_t offSet, struct fuse_file_info *fi){
 
     //TODO : implementar
 
+    char buffer[BLOCK_SIZE_BYTES];
+    int bytes2read = size, totalRead = 0;
+    NodeStruct *node = myFileSystem.nodes[fi->fh];
+
+    fprintf(stderr, "--->>>my_read: path %s, size %zu, offset %jd, fh %"PRIu64"\n", path, size, (intmax_t)offSet, fi->fh);
+
+    //comprobar que el offset no sobrepasa el final del fichero
+    if(offSet >= node -> fileSize){
+        return 0;
+    }
+    if( (node->fileSize - offSet) < size){
+        bytes2read = node->fileSize - offSet;
+    }else{
+        bytes2read = size;
+    }
+    while(totalRead < bytes2read){
+        int i, currentBlock, offBlock;
+
+        currentBlock = node->blocks[offSet / BLOCK_SIZE_BYTES];       //bloque fisico en la posisicon offset
+        offBlock = offSet % BLOCK_SIZE_BYTES;       //desplazamiento en el bloque fisico correspondiente
 
 
-    return 0;
+        //buffer <-- bloque currentblock del disco virtual
+        if( readBlock(&myFileSystem, currentBlock, &buffer) == -1){
+            //DEVOLVEMOS ERROR (-EIO)
+        }
+        //copiar los byes leidos al buffer de salida BUF
+        for( i = offBlock; i < BLOCK_SIZE_BYTES /* Condicion final de parada */; i++){
+            buff[totalRead++] = buffer[i];
+        }
+
+        // actualizar offset y toralRead
+
+    }
+
+    return 0; // return totalRead;
 }
 
 
