@@ -8,7 +8,7 @@
             "name": "(gdb) launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/FUSE_myFS/fs-fuse",
+            "program": "${workspaceFolder}/fs-fuse",
             "args": ["-t","2097152","-a","virtual-disk","-f","-d -s mount-point"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",

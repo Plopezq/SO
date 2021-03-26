@@ -345,7 +345,7 @@ static int my_read(const char *path, char *buf, size_t size, off_t offSet, struc
         }
         //copiar los byes leidos al buffer de salida BUF
         for( i = offBlock; i < BLOCK_SIZE_BYTES /* Condicion final de parada */; i++){
-            buff[totalRead++] = buffer[i];
+            buf[totalRead++] = buffer[i];
         }
 
         // actualizar offset y toralRead
