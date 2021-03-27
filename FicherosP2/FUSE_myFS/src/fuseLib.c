@@ -315,7 +315,6 @@ static int my_open(const char *path, struct fuse_file_info *fi)
  **/
 static int my_read(const char *path, char *buf, size_t size, off_t offSet, struct fuse_file_info *fi){
 
-    //TODO : implementar
 
     char buffer[BLOCK_SIZE_BYTES];
     int bytes2read = size, totalRead = 0;
@@ -537,37 +536,40 @@ static int my_truncate(const char *path, off_t size)
 }
 
 //TODO: hacer documentacion
-int my_unlink(const char *filename){
+int my_unlink(const char *path){
     //  VER DIAPOSITIVA 14
     fprintf(stderr, "Hemos llegado a unlink\n!");
     //TODO : implementar
-    //int idxNode;
+    int idxNode;
+    int idxDir;
     //Buscar path en el directorio del SF
-
-
-    //idxNode = nodo-i del fichero
-
-
-    //Truncar el fichero utilizando resizeNode
-
-
+   if((idxDir = findFileByName(&myFileSystem, path)) != -1) {
+        //idxNode = nodo-i del fichero
+        idxNode = myFileSystem.directory.files[idxDir].nodeIdx;
+   }else{
+       return -ENOENT; //error al buscar el archivo
+   }
+    //Truncar el fichero utilizando resizeNode, para convertirlo en vacio
+    if(resizeNode(idxNode, 0) != 0){
+        return -1;       //ha habido algun error
+    }
     //Marcar la entrada de directorio como libre
-
+    myFileSystem.directory.files[idxDir].freeFile = true;
 
     //Decrementar el contador de ficheros del directorio
-
-
+    myFileSystem.directory.numFiles--;
     //Marcar el nodo-i como libre
-
-
+    myFileSystem.nodes[idxNode]->freeNode = true;
     //Incrementar el contador de nodos-i libres
-
-
+    myFileSystem.numFreeNodes++;
     //Actualizar el directorio en el disco virtual
-
-
+    if(updateDirectory(&myFileSystem) != 0){
+        return -1; //ha habido algun error
+    }
     //Actualizar el nodo-i en el disco virtual
-
+    if(){
+        return -1; //ha habido algun error
+    }
 
     //Liberar la memoria del nodo-i y actualizar la tabla
 
