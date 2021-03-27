@@ -178,7 +178,7 @@ static int my_getattr(const char *path, struct stat *stbuf)
         return 0;
     }
 
-    /// Rest of the world
+    /// Rest of the world --> the file
     if((idxDir = findFileByName(&myFileSystem, (char *)path + 1)) != -1) {
         node = myFileSystem.nodes[myFileSystem.directory.files[idxDir].nodeIdx];
         stbuf->st_size = node->fileSize;
@@ -325,11 +325,11 @@ static int my_read(const char *path, char *buf, size_t size, off_t offSet, struc
 
     //comprobar que el offset no sobrepasa el final del fichero
     if(offSet >= node -> fileSize){
-        return 0;
+        return -1;
     }
     if( (node->fileSize - offSet) < size){
         bytes2read = node->fileSize - offSet;
-    }else{
+    }else{ //quiere leer mas que size, solo leemos size
         bytes2read = size;
     }
     while(totalRead < bytes2read){
@@ -341,18 +341,19 @@ static int my_read(const char *path, char *buf, size_t size, off_t offSet, struc
 
         //buffer <-- bloque currentblock del disco virtual
         if( readBlock(&myFileSystem, currentBlock, &buffer) == -1){
-            //DEVOLVEMOS ERROR (-EIO)
+            return -EIO; //ha habido algun error
         }
-        //copiar los byes leidos al buffer de salida BUF
-        for( i = offBlock; i < BLOCK_SIZE_BYTES /* Condicion final de parada */; i++){
+        //copiar los byes leidos al buffer de salida BUF (salida de la funcion)
+        for( i = offBlock; i < BLOCK_SIZE_BYTES || totalRead == size /* Condicion final de parada -- ultimo bloque*/; i++){
             buf[totalRead++] = buffer[i];
         }
 
-        // actualizar offset y toralRead
-
+        // actualizar offset y totalRead
+        offSet = offSet + totalRead;
+            //totalRead ya se actualiza en el bucle for anterior
     }
 
-    return 0; // return totalRead;
+    return totalRead;
 }
 
 
@@ -386,8 +387,8 @@ static int my_write(const char *path, const char *buf, size_t size, off_t offset
     while(bytes2Write) {
         int i;
         int currentBlock, offBlock;
-        currentBlock = node->blocks[offset / BLOCK_SIZE_BYTES];
-        offBlock = offset % BLOCK_SIZE_BYTES;
+        currentBlock = node->blocks[offset / BLOCK_SIZE_BYTES]; //bloque fisico en la posisicon offset
+        offBlock = offset % BLOCK_SIZE_BYTES; //desplazamiento en el bloque fisico correspondiente
 
         if( readBlock(&myFileSystem, currentBlock, &buffer)==-1 ) {
             fprintf(stderr,"Error reading blocks in my_write\n");
@@ -494,7 +495,7 @@ static int my_mknod(const char *path, mode_t mode, dev_t device)
     myFileSystem.directory.files[idxDir].nodeIdx = idxNodoI;
     myFileSystem.numFreeNodes--;
 
-    // Fill the fields of the new inode
+    // Fill the fields of the new inode en memoria
     if(myFileSystem.nodes[idxNodoI] == NULL)
         myFileSystem.nodes[idxNodoI] = malloc(sizeof(NodeStruct));
 
@@ -540,7 +541,7 @@ int my_unlink(const char *filename){
     //  VER DIAPOSITIVA 14
     fprintf(stderr, "Hemos llegado a unlink\n!");
     //TODO : implementar
-    int idxNode;
+    //int idxNode;
     //Buscar path en el directorio del SF
 
 
