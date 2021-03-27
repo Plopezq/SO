@@ -539,16 +539,16 @@ static int my_truncate(const char *path, off_t size)
 int my_unlink(const char *path){
     //  VER DIAPOSITIVA 14
     fprintf(stderr, "Hemos llegado a unlink\n!");
-    //TODO : implementar
     int idxNode;
     int idxDir;
     //Buscar path en el directorio del SF
-   if((idxDir = findFileByName(&myFileSystem, path)) != -1) {
+    if((idxDir = findFileByName(&myFileSystem, path)) != -1) {
         //idxNode = nodo-i del fichero
-        idxNode = myFileSystem.directory.files[idxDir].nodeIdx;
-   }else{
+        idxNode = myFileSystem.directory.files[idxDir].nodeIdx;   
+    }else{
        return -ENOENT; //error al buscar el archivo
-   }
+    }
+    NodeStruct *node = myFileSystem.nodes[idxNode];
     //Truncar el fichero utilizando resizeNode, para convertirlo en vacio
     if(resizeNode(idxNode, 0) != 0){
         return -1;       //ha habido algun error
@@ -559,7 +559,7 @@ int my_unlink(const char *path){
     //Decrementar el contador de ficheros del directorio
     myFileSystem.directory.numFiles--;
     //Marcar el nodo-i como libre
-    myFileSystem.nodes[idxNode]->freeNode = true;
+    node->freeNode = true;
     //Incrementar el contador de nodos-i libres
     myFileSystem.numFreeNodes++;
     //Actualizar el directorio en el disco virtual
@@ -567,11 +567,15 @@ int my_unlink(const char *path){
         return -1; //ha habido algun error
     }
     //Actualizar el nodo-i en el disco virtual
-    if(updateNode() != 0){
+    if(updateNode(&myFileSystem, idxNode, node) != 0){
         return -1; //ha habido algun error
     }
 
     //Liberar la memoria del nodo-i y actualizar la tabla
+    free(node);
+    /// Update all the information in the backup file
+    updateSuperBlock(&myFileSystem);
+    updateBitmap(&myFileSystem);
 
 
     return 0;
