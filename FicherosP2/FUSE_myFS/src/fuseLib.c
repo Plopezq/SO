@@ -567,7 +567,7 @@ int my_unlink(const char *path){
         return -1; //ha habido algun error
     }
     //Actualizar el nodo-i en el disco virtual
-    if(){
+    if(updateNode() != 0){
         return -1; //ha habido algun error
     }
 
