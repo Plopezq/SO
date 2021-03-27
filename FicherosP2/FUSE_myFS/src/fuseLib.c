@@ -344,7 +344,7 @@ static int my_read(const char *path, char *buf, size_t size, off_t offSet, struc
             return -EIO; //ha habido algun error
         }
         //copiar los byes leidos al buffer de salida BUF (salida de la funcion)
-        for( i = offBlock; i < BLOCK_SIZE_BYTES || totalRead == size /* Condicion final de parada -- ultimo bloque*/; i++){
+        for( i = offBlock; i < BLOCK_SIZE_BYTES && totalRead < bytes2read /* Condicion final de parada -- ultimo bloque*/; i++){
             buf[totalRead++] = buffer[i];
         }
 
