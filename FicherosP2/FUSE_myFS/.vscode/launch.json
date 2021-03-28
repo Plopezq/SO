@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/fs-fuse",
             "args": ["-t","2097152","-a","virtual-disk","-f","-d -s mount-point"],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
