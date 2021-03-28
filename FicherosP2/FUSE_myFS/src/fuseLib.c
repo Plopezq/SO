@@ -535,7 +535,6 @@ static int my_truncate(const char *path, off_t size)
     return 0;
 }
 
-//TODO: hacer documentacion
 int my_unlink(const char *path){
     //  VER DIAPOSITIVA 14
     fprintf(stderr, "Hemos llegado a unlink\n!");

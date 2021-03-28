@@ -7,7 +7,7 @@
 cp src/fuseLib.c ./mount-point/
 cp src/myFS.h ./mount-point/
 
-rm -R /temp
+#rm -R /temp
 
 mkdir temp 
 cp src/fuseLib.c ./temp/
