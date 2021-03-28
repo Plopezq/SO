@@ -7,7 +7,7 @@
 cp src/fuseLib.c ./mount-point/
 cp src/myFS.h ./mount-point/
 
-rm -R temp/
+rm -R temp/ #Por si ya existia ese directorio
 
 mkdir temp 
 cp src/fuseLib.c ./temp/
@@ -33,7 +33,7 @@ cp text.txt ./mount-point/
 ./my-fsck virtual-disk
 diff text.txt ./mount-point/text.txt
 #f) Trunque el segundo ﬁchero en copiasTemporales y en nuestro SF haciendo que ocupe algún bloque de datos más.
-#un bloque --> 4096
+#un bloque --> 4096, le a;ado 2 bloques a cada archivo
 truncate -s +8192 temp/myFS.h
 truncate -s +8192 mount-point/myFS.h
 #g) Audite el disco y haga un diff entre el ﬁchero original y el truncado.

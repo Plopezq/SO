@@ -574,7 +574,6 @@ int my_unlink(const char *path){
     free(myFileSystem.nodes[idxNode]);
     myFileSystem.nodes[idxNode] = NULL;
     /// Update all the information in the backup file
-   // updateNode(&myFileSystem, idxNode, node);
     updateSuperBlock(&myFileSystem);
     updateBitmap(&myFileSystem);
 
