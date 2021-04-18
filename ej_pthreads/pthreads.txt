@@ -1,8 +1,12 @@
 Ejercicio pthreads
 Se pide:
 
-1. Completar las partes principales marcadas en el código (fichero pvect.c) para implementar una versión paralela de la función pvect_secuencial utilizando la API pthreads.
+1. Completar las partes principales marcadas en el código (fichero pvect.c) para implementar 
+una versión paralela de la función pvect_secuencial utilizando la API pthreads.
 
-2. Completar la función tiempo() para que devuelva una marca de tiempo en milisegundos. Utilizad para ello la función gettimeofday
+2. Completar la función tiempo() para que devuelva una marca de tiempo en milisegundos. 
+Utilizad para ello la función gettimeofday
 
-3. Entregad, junto con el código, una gráfica en la que se ilustre el tiempo de ejecución para la versión secuencial y paralela con 1, 2, 4 y 8 hilos, para un tamaño creciente de vector (hasta 10000000 elementos).
+3. Entregad, junto con el código, una gráfica en la que se ilustre el tiempo de ejecución 
+para la versión secuencial y paralela con 1, 2, 4 y 8 hilos, 
+para un tamaño creciente de vector (hasta 10000000 elementos).

@@ -35,8 +35,13 @@ int * id_hilos;
 
 double tiempo()
 {
-  // COMPLETAR. Debe retornar una marca de tiempo en milisegundos.
-  return 0.0;
+  // COMPLETAR. Debe retornar una marca de tiempo en milisegundos. -> hecho
+	struct timeval current_time;
+	gettimeofday(&current_time, NULL); //la timezone nos da igual
+	double seconds = current_time.tv_sec;
+	double microSeconds = current_time.tv_usec;
+
+	return ((seconds * 1000)+(microSeconds * 0.001)); //devuelvo los milisegundos
 }
 
 int check( double * a, double *b, double n )
@@ -125,7 +130,7 @@ void pvec_secuencial( double * a, double * b, double * c, int n )
 
   for( i = 0; i < n; i++ )
   {
-    c[i] = a[i] * b[i]; 
+    c[i] = a[i] * b[i];
   } 
 
 }
@@ -183,8 +188,10 @@ int main( int argc, char * argv[] )
 
 	printf( "Suma secuencial\n" );
 	tic = tiempo();
+	//printf( "suma secuencial. TIC: %f\n", tic);
 	pvec_secuencial( vector1, vector2, vector3, tam );
 	toc = tiempo();
+	//printf( "suma secuencial. TOC: %f\n", toc);
 	printf( "Fin suma secuencial. Tiempo: %f\n", toc - tic );
 
 #if IMPRIME
