@@ -90,10 +90,10 @@ void * pvec_trozo(void* arg)
   // COMPLETAR. Recibe un valor entero entre 0 y num_hilos y realiza la operación
   // sobre los elementos correspondientes del vector.
   
-  int *p = (int *) arg;
+  int *p = (int *) arg; //Casteo el entero pasado como parametro
 
   int i, chunk;
-  int numero_hilo = *p;
+  int numero_hilo = *p; //El pasado por parametro
   int ini, fin, num_valores;
 
   num_valores = tam / num_hilos;
@@ -101,24 +101,24 @@ void * pvec_trozo(void* arg)
   ini = num_valores * numero_hilo;
   fin = ini + num_valores;
 
-  printf( "Thread %ld activo con id %d. Sumara %d valores, desde %d hasta %d\n", pthread_self(), numero_hilo, num_valores, ini, fin );
+  printf( "Thread %ld activo con id %d. Sumara %d valores, desde %d hasta %d\n", pthread_self(), numero_hilo + 1, num_valores, ini, fin );
   // COMPLETAR. Operación
 	for( i = ini; i < fin; i++ )
 	{
-		vector4[i] = vector1[i] * vector2[i];
+		//Accedo a los vectores de manera global, ya que abajo dice que seran compartidos por todos los hilos
+		vector4[i] = vector1[i] * vector2[i]; 
 	}
 }
-
 
 // Operacion paralela.
 void pvec_paralelo( double * a, double * b, double * c, int n, int num_hilos ) //Aqui esta la violacion del segmento
 {
 	int i = 0;
 	// COMPLETAR. Creamos cada hilo e invocamos a pvec_trozo como punto de entrada
-	// Proporcionamos un identificador entre 0 y num_hilos para cada nuevo hilo.
+	// Proporcionamos un identificador entre 0 y num_hilos para cada nuevo hilo. ->dentro de el primer for
 	pthread_attr_t attr;
-	hilos = (pthread_t*)malloc(num_hilos*sizeof(pthread_t));
-	id_hilos = (int*)malloc(num_hilos*sizeof(int));
+	hilos = (pthread_t*)malloc(num_hilos*sizeof(pthread_t)); //inicializo los hilos
+	id_hilos = (int*)malloc(num_hilos*sizeof(int)); //inicializo el vector de id_hilos
 	pthread_attr_init(&attr); //Se inicializan los atributos
 	for( i = 0; i < num_hilos; i++ )
 	{
