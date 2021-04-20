@@ -11,13 +11,6 @@
 
 #define IMPRIME 0
 
-struct param{
-	double *a;
-	double *b;
-	double *c;
-	int num_hilo;
-};
-
 // Vectores de entrada para operar.
 double * vector1;
 double * vector2;
@@ -96,11 +89,11 @@ void * pvec_trozo(void* arg)
 {
   // COMPLETAR. Recibe un valor entero entre 0 y num_hilos y realiza la operación
   // sobre los elementos correspondientes del vector.
-  struct param *p;
-  p = (struct param *) arg;
+  
+  int *p = (int *) arg;
 
   int i, chunk;
-  int numero_hilo = p->num_hilo;
+  int numero_hilo = *p;
   int ini, fin, num_valores;
 
   num_valores = tam / num_hilos;
@@ -109,11 +102,10 @@ void * pvec_trozo(void* arg)
   fin = ini + num_valores;
 
   printf( "Thread %ld activo con id %d. Sumara %d valores, desde %d hasta %d\n", pthread_self(), numero_hilo, num_valores, ini, fin );
-
   // COMPLETAR. Operación
 	for( i = ini; i < fin; i++ )
 	{
-		p->c[i] = p->a[i] * p->b[i];
+		vector4[i] = vector1[i] * vector2[i];
 	}
 }
 
@@ -128,22 +120,16 @@ void pvec_paralelo( double * a, double * b, double * c, int n, int num_hilos ) /
 	hilos = (pthread_t*)malloc(num_hilos*sizeof(pthread_t));
 	id_hilos = (int*)malloc(num_hilos*sizeof(int));
 	pthread_attr_init(&attr); //Se inicializan los atributos
-	//pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); //Se marcan como independientes
-	struct param parametros = {a,b,c,0};
 	for( i = 0; i < num_hilos; i++ )
 	{
-		//printf("%ld", i);
-		id_hilos[i] = i + 1;
-		parametros.num_hilo = id_hilos[i];
-		pthread_create(&hilos[i], &attr, pvec_trozo, (void*)&parametros);
+		id_hilos[i] = i;
+		pthread_create(&hilos[i], &attr, pvec_trozo, (void*)&id_hilos[i]);
 	}
-
 	// COMPLETAR. Esperamos a la finalización de los hilos.
 	for( i = 0; i < num_hilos; i++ )
 	{
 		pthread_join(hilos[i], NULL);
 	}
-
 }
 
 // Operacion secuencial.
