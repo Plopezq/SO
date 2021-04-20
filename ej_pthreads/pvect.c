@@ -15,7 +15,7 @@ struct param{
 	double *a;
 	double *b;
 	double *c;
-	int num_hilos;
+	int num_hilo;
 };
 
 // Vectores de entrada para operar.
@@ -92,13 +92,15 @@ void imprime_vector( double * a, int n )
 }
 
 // Punto de entrada para los hilos. 
-void * pvec_trozo(struct param *parametros)
+void * pvec_trozo(void* arg)
 {
   // COMPLETAR. Recibe un valor entero entre 0 y num_hilos y realiza la operación
   // sobre los elementos correspondientes del vector.
-  int i, chunk;
-  int numero_hilo = parametros->num_hilos;/* COMPLETAR */;
+  struct param *p;
+  p = (struct param *) arg;
 
+  int i, chunk;
+  int numero_hilo = p->num_hilo;
   int ini, fin, num_valores;
 
   num_valores = tam / num_hilos;
@@ -111,35 +113,35 @@ void * pvec_trozo(struct param *parametros)
   // COMPLETAR. Operación
 	for( i = ini; i < fin; i++ )
 	{
-		parametros->c[i] = parametros->a[i] * parametros->b[i];
-	} 
+		p->c[i] = p->a[i] * p->b[i];
+	}
 }
 
 
 // Operacion paralela.
-void pvec_paralelo( double * a, double * b, double * c, int n, int num_hilos )
+void pvec_paralelo( double * a, double * b, double * c, int n, int num_hilos ) //Aqui esta la violacion del segmento
 {
 	int i = 0;
 	// COMPLETAR. Creamos cada hilo e invocamos a pvec_trozo como punto de entrada
 	// Proporcionamos un identificador entre 0 y num_hilos para cada nuevo hilo.
-
-
-
 	pthread_attr_t attr;
-	pthread_t thid[num_hilos];
+	hilos = (pthread_t*)malloc(num_hilos*sizeof(pthread_t));
+	id_hilos = (int*)malloc(num_hilos*sizeof(int));
 	pthread_attr_init(&attr); //Se inicializan los atributos
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); //Se marcan como independientes
-	for( i = 0; i < num_hilos - 1; i++ )
+	//pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); //Se marcan como independientes
+	struct param parametros = {a,b,c,0};
+	for( i = 0; i < num_hilos; i++ )
 	{
-		struct param parametros = {a,b,c,i};
-		pthread_create(&thid[i], &attr, (void*)pvec_trozo, (void *)&parametros);
-		//pthread_create(&thid[i], NULL, pvec_trozo(i), NULL);
+		//printf("%ld", i);
+		id_hilos[i] = i + 1;
+		parametros.num_hilo = id_hilos[i];
+		pthread_create(&hilos[i], &attr, pvec_trozo, (void*)&parametros);
 	}
 
 	// COMPLETAR. Esperamos a la finalización de los hilos.
 	for( i = 0; i < num_hilos; i++ )
 	{
-		pthread_join(thid[i], NULL);
+		pthread_join(hilos[i], NULL);
 	}
 
 }
