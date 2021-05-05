@@ -8,14 +8,16 @@
 
 #define N 3
 
-
+//#define EXERCISE_OPEN = true;
+//VARIABLES GLOBALES
 int a_global=0;
 char tab[2*N]="\0";
 
 int main() {
+	//VARIABLES LOCALES
 	pid_t pid;
 	int b_local = 0;
-	int * p_heap;
+	int * p_heap; //VARIABLE EN MEM DINAMICA
 	int fd;
 	int i;
 	FILE* file_desc;
@@ -34,22 +36,23 @@ int main() {
 			exit(-1);
 		}
 		else if (pid==0) {
-			//Child
-
+			//PROCESO HIJO
+			//sleep(5); //Para que sus padres mueran e init adopte a los procesos hijos
 #ifdef EXERCISE_OPEN
 			fd=open("file.txt",O_CREAT | O_RDWR ,0666);
 			file_desc = fdopen(fd,"r+");
 			setvbuf(file_desc,(char*)NULL,_IOLBF, 0);
 #endif
-			strcat(tab,"\t\0");
-			
+			strcat(tab,"\t\0");//Concatena 2 strings
+			//MODIFICACION DE VARIABLES
 			a_global+=2; b_local+=2; (*p_heap) +=2;
 			fprintf(file_desc,"%s Child. pid=%u ppid=%u. i=%d a=%d b=%d *p=%d\n",tab,getpid(),getppid(),i,a_global,b_local,*p_heap);
 			fflush(NULL);
 
 		}
 		else {
-			// Parent.
+			// PROCESO PADRE
+			//sleep(5); Dormimos al padre para que haya hijos zombies
 			a_global++; b_local++; (*p_heap)++;
 			fprintf(file_desc,"%s Parent. pid=%u ppid=%u. i=%d a=%d b=%d *p=%d\n",tab,getpid(),getppid(),i,a_global,b_local,*p_heap);
 			fflush(NULL);
@@ -57,14 +60,12 @@ int main() {
 	}
 	fclose(file_desc);
 
-	while (wait(NULL) != -1) ;
+	while (wait(NULL) != -1) ; //Para que sus padres mueran e init adopte a los procesos hijos
 	if (errno != ECHILD) {
 		printf("ERROR when waiting for children to finish\n");
 		exit(-1);
 	}
 
 	exit(0);
-	
-	
-	
+
 }
