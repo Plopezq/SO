@@ -8,25 +8,31 @@ void * partial_sum(void * arg) {
   int ni=((int*)arg)[0];
   int nf=((int*)arg)[1];
 
-  for (j = ni; j <= nf; j++)
-    total_sum = total_sum + j;
-
+  for (j = ni; j <= nf; j++){
+    //SECCION CRITICA
+      total_sum = total_sum + j;
+    //FIN DE SECCION CRITICA
+  }
   pthread_exit(0);
 }
-
-int main(void) {
-  pthread_t th1, th2;
+//COMO ESTRUCTURAR
+int main(int argc, char *argv[]) {
+  int numHilos = argv[1] - '0';
+  pthread_t thread[numHilos];
+  
   int num1[2]={  1,   4999};
   int num2[2]={5000, 10000};
 
-  /* Two threads are created */
-  pthread_create(&th1, NULL, partial_sum, (void*)num1);
-  pthread_create(&th2, NULL, partial_sum, (void*)num2);
+  /* CREACION DE LOS HILOS */
+  for(int i = 0; i < numHilos; i++){
+    pthread_create(&thread[i], NULL, partial_sum, (void*)num1);
+    pthread_create(&thread[i], NULL, partial_sum, (void*)num2);
+  }
 
-  /* the main thread waits until both threads complete */
-  pthread_join(th1, NULL);
-  pthread_join(th2, NULL);
-
+  /* FINALIZACION DE LOS HILOS */
+  for(int i = 0; i < numHilos; i++){
+    pthread_join(thread, NULL);  
+  }
   printf("total_sum=%d and it should be 50005000\n", total_sum);
 
   return 0;
