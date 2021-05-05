@@ -1,6 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int my_system( char * comando){
+
+	//Creando un nuevo proceso
+
+
+}
+
+
+
+
 int main(int argc, char* argv[])
 {
 	if (argc!=2){
