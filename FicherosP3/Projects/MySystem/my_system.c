@@ -13,14 +13,14 @@ int my_system(char * comando){
 	case 0:   /* proceso hijo */
 		// --execlp( comando ); /// OJO, hay que hacerlo bien
 		//	execlp( /bin/bash -c comando ); /// OJO, hay que hacerlo bien
-		printf("Proceso hijo\n");
+		//printf("Proceso hijo\n");
 		execlp("/bin/bash","/bin/bash", "-c", comando, (char *)NULL);
 		printf("ERROR en el exec\n");
 		perror("exec");
 		return 2;
 	default:  /* padre */
 		wait(); //Espero a que mi hijo acabe
-		printf("Proceso padre\n");
+		//printf("Proceso padre\n");
   	}
 	return 0;
 }
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	//system(argv[1]);
 	my_system(argv[1]);
 	
-	printf("Saliendo del main\n");
+	//printf("Saliendo del main\n");
 	return 0;
 }
 

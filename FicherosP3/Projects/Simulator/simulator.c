@@ -60,7 +60,7 @@ void Autobus_En_Parada(){
 		wait(	);
 	}
 
-
+	
 
 
 }
