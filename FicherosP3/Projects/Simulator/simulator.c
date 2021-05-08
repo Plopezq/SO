@@ -45,7 +45,7 @@ void Autobus_En_Parada(){
 	pthread_mutex_unlock(&mutex);
 	//FINAL SECCION CRITICA
 	//TODO ver si hace falta una seccion critica
-	while(esperando_parada[parada_actual] > 0){ //Mientras haya gente que quiera subir
+	while(esperando_parada[parada_actual]){ //Mientras haya gente que quiera subir
 		pthread_cond_broadcast(&espe_par); //Aviso (yo como autobus) a todos los que estan esperando en la parada
 									// para que intenten subir al autobus
 
@@ -115,7 +115,6 @@ void Subir_Autobus(int id_usuario, int origen){
 	pthread_mutex_unlock(&mutex);
 	//FINAL SECCION CRITICA
 	printf("Usuario %d se sube al bus en la parada %d \n", id_usuario, origen);
-
 }
 
 void Bajar_Autobus(int id_usuario, int destino){ 
@@ -195,17 +194,17 @@ int main(int argc, char* argv[])
 
 	for (i = 0; i < USUARIOS; i++){
 		// Crear thread para el usuario i
-		pthread_create(&th_usuarios[i], NULL, thread_usuario, (void*)&i );
 		printf("Creando hilo de un usuario\n");
+		pthread_create(&th_usuarios[i], NULL, thread_usuario, (void*)&i );
 	}
 	// Crear el thread Autobus
-	pthread_create(&th_autobus, NULL, thread_autobus, NULL);
 	printf("Creando hilo del autobus\n");
+	pthread_create(&th_autobus, NULL, thread_autobus, NULL);
 
 	for (i = 0; i < USUARIOS; i++){ 
 		// ESPERAR terminacion de los hilos de los usuarios
-		pthread_join(th_usuarios[i], NULL);
 		printf("Esperando terminacion del hilo de un usuario\n");
+		pthread_join(th_usuarios[i], NULL);
 	}
 	//ESPERAR al hilo del autobus
 	pthread_join(th_autobus, NULL);
