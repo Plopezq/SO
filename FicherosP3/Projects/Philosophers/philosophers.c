@@ -46,15 +46,28 @@ void* philosopher(void* i)
     while(1)
     {
         
-        think(nPhilosopher);
+        think(nPhilosopher);//PIENSA
         
         /// TRY TO GRAB BOTH FORKS (right and left)
+        // Tomar tenedor izquierzo
+        pthread_mutex_lock(&forks[left]);
+            printf("Filosofo %d toma el tenedor izquierdo %d \n", nPhilosopher, left);
+        //Tomar tenedor derecho
+        pthread_mutex_lock(&forks[right]);
+            printf("Filosofo %d toma el tenedor derecho %d \n", nPhilosopher, right);
 
-        eat(nPhilosopher);
+        eat(nPhilosopher); //COME
         
         // PUT FORKS BACK ON THE TABLE
+
+        // Tomar tenedor izquierzo
+        pthread_mutex_unlock(&forks[left]);
+            printf("Filosofo %d deja el tenedor izquierdo %d \n", nPhilosopher, left);
+        //Tomar tenedor derecho
+        pthread_mutex_unlock(&forks[right]);
+            printf("Filosofo %d deja el tenedor derecho %d \n", nPhilosopher, right);
         
-        toSleep(nPhilosopher);
+        toSleep(nPhilosopher); //DUERME
    }
 
 }
