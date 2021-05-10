@@ -45,14 +45,16 @@ void Autobus_En_Parada(){
 	//pthread_mutex_unlock(&mutex);
 	//FINAL SECCION CRITICA
 	//TODO ver si hace falta una seccion critica
-	while(esperando_parada[parada_actual]){ //Mientras haya gente que quiera subir
+	//printf("Esperando a subir %d personas en la parada %d",esperando_parada[parada_actual] ,parada_actual);
+	
+	while(esperando_parada[parada_actual] > 0 || esperando_bajar[parada_actual] > 0){ //Mientras haya gente que quiera subir o bajar
 		pthread_cond_broadcast(&espe_par); //Aviso (yo como autobus) a todos los que estan esperando en la parada
 									// para que intenten subir al autobus
-		if(esperando_bajar[parada_actual] > 0){ //si alguien quiere bajar en esta parada
+		while(esperando_bajar[parada_actual] > 0){ //si alguien quiere bajar en esta parada
 			printf("autobus esperando a que bajentodos\n");
 			pthread_cond_wait(&esper_bajar, &mutex);	//Espero (yo como autobus) a que me digan que ya bajo el ultimo
-		} 
-		if(esperando_parada[parada_actual] > 0){ //si alguien quiere subir en esta parada
+		} //1 bajan, 2 suben
+		while(esperando_parada[parada_actual] > 0){ //si alguien quiere subir en esta parada
 			printf("autobus esperando a que suban todos\n");
 			pthread_cond_wait(&esper_suban, &mutex);	//Espero (yo como autobus) a que me digan que ya subio el ultimo
 		}
@@ -116,10 +118,11 @@ void Subir_Autobus(int id_usuario, int origen){
 		}
 		esperando_parada[origen]--; //La persona se sube al autobus
 		printf("Ya me subi al autobus");
-		if(esperando_parada[parada_actual] == 0){ //SI SOY EL ULTIMOen subir de la parada
-			printf("Ya subimos todos los de esta parada al autobus\n");
+		//if(esperando_parada[parada_actual] == 0){ //SI SOY EL ULTIMOen subir de la parada
+		//	printf("Ya subimos todos los de esta parada al autobus\n");
 			pthread_cond_signal(&esper_suban); //Aviso al autobus para que deje de esperar en la parada
-		}
+			//Aviso al autobus de que me he bajado
+		//}
 	pthread_mutex_unlock(&mutex);
 	//FINAL SECCION CRITICA
 	printf("Usuario %d se sube al bus en la parada %d \n", id_usuario, origen);
@@ -145,9 +148,10 @@ void Bajar_Autobus(int id_usuario, int destino){
 		printf("Ya he llegado a mi parada");
 		esperando_bajar[destino]--; //La persona se baja del
 		n_ocupantes--;
-		if(esperando_parada[parada_actual] == 0){ //Si soy el ultimo en subir de la parada
+		//if(esperando_parada[parada_actual] == 0){ //Si soy el ultimo en subir de la parada
 			pthread_cond_signal(&esper_bajar); //Aviso al autobus para que deje de esperar en la parada
-		}
+			//Aviso al autobus de que me he bajado
+		//}
 	pthread_mutex_unlock(&mutex);
 	//FINAL SECCION CRITICA
 	printf("Usuario %d se baja del bus en la parada %d \n", id_usuario, destino);
@@ -155,7 +159,7 @@ void Bajar_Autobus(int id_usuario, int destino){
 }
 void * thread_autobus(void * args) { 
 	while (n_ocupantes > 0) { //TODO ver condicion --> Puede ser infinito, la ruta es circular
-		// esperar a que los viajeros suban y bajen 
+		// esperar a que los viajeros suban y bajen
 		Autobus_En_Parada(); 
 		// conducir hasta siguiente parada 
 		Conducir_Hasta_Siguiente_Parada(); 
