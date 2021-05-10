@@ -1,25 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+
 
 int my_system(char * comando){
-	pid_t pid;
-	int status;
+	 int status,pid;
+
 	//Creando un nuevo proceso
 	pid = fork();
 	switch (pid) {
 		case -1:  /* error del fork() */
 		return 1;
 	case 0:   /* proceso hijo */
-		// --execlp( comando ); /// OJO, hay que hacerlo bien
-		//	execlp( /bin/bash -c comando ); /// OJO, hay que hacerlo bien
 		//printf("Proceso hijo\n");
 		execlp("/bin/bash","/bin/bash", "-c", comando, (char *)NULL);
 		printf("ERROR en el exec\n");
 		perror("exec");
 		return 2;
 	default:  /* padre */
-		wait(); //Espero a que mi hijo acabe
+		wait(&status); //Espero a que mi hijo acabe
 		//printf("Proceso padre\n");
   	}
 	return 0;
@@ -32,7 +33,6 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-	//system(argv[1]);
 	my_system(argv[1]);
 	
 	//printf("Saliendo del main\n");
