@@ -59,7 +59,6 @@ void* philosopher(void* i)
         eat(nPhilosopher); //COME
         
         // PUT FORKS BACK ON THE TABLE
-
         // Tomar tenedor izquierzo
         pthread_mutex_unlock(&forks[left]);
             printf("Filosofo %d deja el tenedor izquierdo %d \n", nPhilosopher, left);
