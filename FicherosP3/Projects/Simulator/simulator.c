@@ -177,7 +177,7 @@ void * thread_usuario(void * arg) {
 int main(int argc, char* argv[])
 {
 	/* ... To be completed ... */
-	int i;
+	int identificadores[USUARIOS];
 	// Definicion de variables locales a main
 	//Declaracion de los hilos
 	pthread_t th_autobus;
@@ -190,11 +190,16 @@ int main(int argc, char* argv[])
 	// Opcional: obtener de los argumentos del programa la capacidad del 
 	// autobus, el numero de usuarios y el numero de paradas
 
-	for (i = 0; i < USUARIOS; i++){
+	//IMPORTANTE: considero que la ruta es circular y cuando un usuario se baja del bus, 
+	// vuelve a solicitar subir en otra parada. Por lo que el programa nunca acaba
+
+
+	for (int i = 0; i < USUARIOS; i++){
 		// Crear thread para el usuario i
 		printf("Creando hilo de un usuario\n");
 		pthread_mutex_lock(&mutex);
-		pthread_create(&th_usuarios[i], NULL, thread_usuario, (void*)&i );
+		identificadores[i] = i;
+		pthread_create(&th_usuarios[i], NULL, thread_usuario, (void*)&identificadores[i] );
 		pthread_mutex_unlock(&mutex);
 
 	}
@@ -202,7 +207,7 @@ int main(int argc, char* argv[])
 	printf("Creando hilo del autobus\n");
 	pthread_create(&th_autobus, NULL, thread_autobus, NULL);
 	
-	for (i = 0; i < USUARIOS; i++){ 
+	for (int i = 0; i < USUARIOS; i++){ 
 		// ESPERAR terminacion de los hilos de los usuarios
 		pthread_join(th_usuarios[i], NULL);
 		printf("Esperando terminacion del hilo de un usuario\n");
