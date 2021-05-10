@@ -32,7 +32,7 @@ pthread_cond_t esper_bajar; //El autobus espera a que bajen todos
 
 //FUNCIONES AUXILIARES A IMPLEMENTAR
 
-void Autobus_En_Parada(){ 
+void Autobus_En_Parada(){
 	/* Ajustar el estado y bloquear al autobus hasta que no haya pasajeros que 
 	quieran bajar y/o subir la parada actual. Despues se pone en marcha */
 
@@ -101,14 +101,12 @@ void Subir_Autobus(int id_usuario, int origen){
 	pthread_mutex_lock(&mutex);
 		printf("Usuario %d esperando a subir en la parada %d \n", id_usuario, origen);
 		esperando_parada[origen]++; //Una persona mas a subir en esa parada
-
 		while((estado)!= EN_PARADA
 				|| (parada_actual) != origen){
 			pthread_cond_wait(&espe_par, &mutex); //Me bloqueo hasta que el bus me avise de que esta en una parada
 			//PUEDE que la parada no sea la mia, por eso esta el while
 			//SOLO saldra del wait si esta el autobus en su parada
 		}
-
 		esperando_parada[origen]--; //La persona se sube al autobus
 		pthread_cond_signal(&esper_suban); //Aviso al autobus de que me he subido
 		printf("Usuario %d se sube al bus en la parada %d \n", id_usuario, origen);
@@ -193,7 +191,6 @@ int main(int argc, char* argv[])
 	//IMPORTANTE: considero que la ruta es circular y cuando un usuario se baja del bus, 
 	// vuelve a solicitar subir en otra parada. Por lo que el programa nunca acaba
 
-
 	for (int i = 0; i < USUARIOS; i++){
 		// Crear thread para el usuario i
 		printf("Creando hilo de un usuario\n");
@@ -220,8 +217,6 @@ int main(int argc, char* argv[])
 	pthread_cond_destroy(&espe_par);
 	pthread_cond_destroy(&esper_suban);
 	pthread_cond_destroy(&esper_bajar);
-
-
 
 	exit(0);
 }

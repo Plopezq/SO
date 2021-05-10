@@ -21,21 +21,18 @@ void think(int i) {
     printf("Philosopher %d thinking... \n" , i);
     sleep(random() % 10);
     printf("Philosopher %d stopped thinking!!! \n" , i);
-
 }
 
 void eat(int i) {
     printf("Philosopher %d eating... \n" , i);
     sleep(random() % 5);
     printf("Philosopher %d is not eating anymore!!! \n" , i);
-
 }
 
 void toSleep(int i) {
     printf("Philosopher %d sleeping... \n" , i);
     sleep(random() % 10);
     printf("Philosopher %d is awake!!! \n" , i);
-    
 }
 
 void* philosopher(void* i)
