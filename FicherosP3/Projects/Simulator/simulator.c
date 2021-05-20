@@ -32,7 +32,7 @@ pthread_cond_t esper_bajar; //El autobus espera a que bajen todos
 
 //FUNCIONES AUXILIARES A IMPLEMENTAR
 
-void Autobus_En_Parada(){
+void Autobus_En_Parada(){	//CORRECTO
 	/* Ajustar el estado y bloquear al autobus hasta que no haya pasajeros que 
 	quieran bajar y/o subir la parada actual. Despues se pone en marcha */
 
@@ -64,7 +64,7 @@ void Autobus_En_Parada(){
 	//FINAL SECCION CRITICA
 }
 
-void Conducir_Hasta_Siguiente_Parada(){ 
+void Conducir_Hasta_Siguiente_Parada(){	//CORRECTO
 	/* Establecer un Retardo que simule el trayecto y actualizar numero de parada */ 
 	//Generar numero aleatorio para un sleep
 	//INICIO SECCION CRITICA
@@ -90,7 +90,12 @@ void Conducir_Hasta_Siguiente_Parada(){
 
 }
 
-void Subir_Autobus(int id_usuario, int origen){ 
+void Subir_Autobus(int id_usuario, int origen){
+	//Para ahorrar ciclos de CPU, sólo el último de los pasajeros que suben debería señalizar al autobús. 
+	//Lo que hacéis es correcto, pero el autobus se despertará innecesariamente todas las veces 
+	//(excepto una, la última, en la que ya no quedan más por subir.)
+
+
 	/* El usuario indicara que quiere subir en la parada ’origen’, esperara a que 
 	el autobus se pare en dicha parada y subira. El id_usuario puede utilizarse para 
 	proporcionar informacion de depuracion */ 
@@ -114,7 +119,12 @@ void Subir_Autobus(int id_usuario, int origen){
 	//FINAL SECCION CRITICA
 }
 
-void Bajar_Autobus(int id_usuario, int destino){ 
+void Bajar_Autobus(int id_usuario, int destino){
+	//Para ahorrar ciclos de CPU, sólo el último de los pasajeros que suben debería señalizar al autobús. 
+	//Lo que hacéis es correcto, pero el autobus se despertará innecesariamente todas las veces 
+	//(excepto una, la última, en la que ya no quedan más por subir.)
+
+
 	/* El usuario indicara que quiere bajar en la parada ’destino’, esperara a que 
 	el autobus se pare en dicha parada y bajara. El id_usuario puede utilizarse para 
 	proporcionar informacion de depuracion */ 
@@ -172,7 +182,7 @@ void * thread_usuario(void * arg) {
 }
 
 
-int main(int argc, char* argv[])
+int main(int argc, char* argv[])	//CORRECTO
 {
 	/* ... To be completed ... */
 	int identificadores[USUARIOS];
