@@ -13,18 +13,25 @@ pthread_mutex_t posi; //Para controlar el acceso a la variable compartida posici
 void * func(void * arg) 
 {
     int fd = (int*)arg;
-    printf("%d\n", fd);
+    //printf("%d\n", fd);
     //Saco mi pid
     pid_t pid;
     pid = gettid();
-    
+    char* archivo = (char *) arg;
+    //APERTURA DEL FICHERO
+	fd = fopen(archivo, "w+");
     //SECCION CRITICA INICIO
     pthread_mutex_lock(&posi);
         //calculo mi posicion en el fichero
-
+        //posicion = 
     pthread_mutex_unlock(&posi);
     //SECCION CRITICA FIN
 
+    //aHORA TOCARIA HACER UN LSEEK con el valor de posicion
+
+    //ESCRIBIR EN EL FICHERO
+
+    fclose(fd);
   printf("Thread x \n");
   pthread_exit(0);
 }
@@ -39,15 +46,14 @@ int main(int argc, char *argv[]) {
     pthread_t thread[numHilos]; //vector con el numero de hilos
     pthread_mutex_init(&posi, NULL); //inicializo el mutex
 
-    //APERTURA DEL FICHERO
-    //Lo abro aqui ya que la tabla de descriptores 
-    // abiertos es compartida por todos los hilos del proceso
-	int fd = open(argv[2], O_WRONLY|O_CREAT|O_TRUNC, 0700);
 
+    char* archivo = argv[2];
 
     /* CREACION DE LOS HILOS */
     for(int i = 0; i < numHilos; i++){
-        pthread_create(&thread[i], NULL, func, (void*)fd);
+        //Me quedaria pasarle pasarle tambien la i, podria crear un struct para pasarle 
+        // las dos variables a la vez a func
+        pthread_create(&thread[i], NULL, func, (void*)archivo);
     }
     printf("El thread principal continua ejecutando\n");
 
@@ -56,13 +62,18 @@ int main(int argc, char *argv[]) {
         pthread_join(thread[i], NULL);  
     }
 
-    //CIERRO EL ARCHIVO
-    close(fd);
+ 
 
-    //Muestro el contenido del fichero
-
-
-
+    //MUESTRO EL CONTENIDO DEL FICHERO
+    int bytesLeidos;
+    char contenido[1024];
+    int fd = fopen(argv[2], "r+");//lo abro para solo lectura
+    if (fread( &contenido, sizeof(int),1,fd) < 1) { 
+            		perror("write");
+			fclose(fd);
+            		exit(-1);
+    }
+    fclose(fd);
   return 0;
 
 }
