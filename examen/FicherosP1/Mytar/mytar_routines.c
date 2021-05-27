@@ -303,7 +303,7 @@ FILE* fileTar = NULL;
 	{ 
 		for (int j = i + 1; j < nFiles; j++) 
 		{ 
-			if (array[j].size < array[i].size) 
+			if (array[j].size > array[i].size) 
 			{ 
 				aux.name = array[j].name; 
 				aux.size = array[j].size;
@@ -320,7 +320,7 @@ FILE* fileTar = NULL;
 	//Los nombres y el tamnyo se deberian mostrar de forma correcta,
 	// esto no es asi ya que mi practica debe de tener algun fallo en el extract tar, porque he debugeado y veo que
 	// el tamanyo no se guarda de forma correcta
-	for(int i = nFiles - 1; i >= 0; i--){
+	for(int i = 0 ; i < nFiles; i++){
 		printf("[%d] File Name: %s, ", i, array[i].name);
 		printf("size: %d bytes\n", array[i].size);
 	}
